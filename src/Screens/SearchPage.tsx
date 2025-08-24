@@ -41,16 +41,17 @@ const SearchPage = ({ navigation }: any) => {
       // if (formikRef.current) {
       //   formikRef.current.resetForm();
       // }
-      // setSearchResult({});
+
       const timer = setTimeout(() => {
-        console.warn(Object.keys(searchResult).length);
         if (Object.keys(searchResult).length === 0) {
           inputRef.current?.focus();
+        } else {
+          Keyboard.dismiss();
         }
       }, 100);
 
-      return () => clearTimeout(timer); // cleanup
-    }, []),
+      return () => clearTimeout(timer);
+    }, [searchResult]),
   );
 
   const getHighlightedText = (text: string, highlight: string) => {

@@ -49,6 +49,7 @@ const ViewContact = ({ navigation, route }: any) => {
   const { contact_id } = route?.params;
   const [open, setOpen]: any = useState({
     personalInfo: true,
+    spouseDetails: false,
     familyDetails: false,
     employment: false,
     education: false,
@@ -61,6 +62,7 @@ const ViewContact = ({ navigation, route }: any) => {
     setExpand((prev: any) => !prev);
     setOpen({
       personalInfo: !expand,
+      spouseDetails: !expand,
       familyDetails: !expand,
       employment: !expand,
       education: !expand,
@@ -237,14 +239,13 @@ const ViewContact = ({ navigation, route }: any) => {
             </View>
           )}
 
-          {/* Family Details */}
           <ClosableHeader
             setState={setOpen}
             state={open}
-            stateKey="familyDetails"
-            heading="Family Details"
+            stateKey="spouseDetails"
+            heading="Spouse Details"
           />
-          {open.familyDetails && (
+          {open.spouseDetails && (
             <View style={styles.section}>
               <View
                 style={{
@@ -268,7 +269,18 @@ const ViewContact = ({ navigation, route }: any) => {
                   {contactDetail?.spouse_details || '-'}
                 </Text>
               </View>
+            </View>
+          )}
 
+          {/* Family Details */}
+          <ClosableHeader
+            setState={setOpen}
+            state={open}
+            stateKey="familyDetails"
+            heading="Family Details"
+          />
+          {open.familyDetails && (
+            <View style={styles.section}>
               {contactDetail?.children?.length > 0 ? (
                 contactDetail?.children?.map((child: any, index: any) => (
                   <View key={child.id} style={styles.dynamicItemContainer}>

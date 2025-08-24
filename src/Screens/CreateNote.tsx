@@ -102,7 +102,7 @@ const CreateNote = ({ navigation, route }: any) => {
               type: 'success',
               text1: 'Note edited successfully',
             });
-            if (item) {
+            if (item?.editFrom === 'home') {
               navigation.navigate('Main');
             } else {
               navigation.goBack();

@@ -126,7 +126,14 @@ const AllNotesScreen = ({ navigation, route }: any) => {
               <Feather name="trash-2" size={22} color="#777" />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate('CreateNote', { item })}
+              onPress={() => {
+                return navigation.navigate(
+                  'CreateNote',
+                  notes_data
+                    ? { item: { ...item, editFrom: 'home' } }
+                    : { item },
+                );
+              }}
             >
               <Feather name="edit-2" size={20} color="#777" />
             </TouchableOpacity>
