@@ -245,32 +245,43 @@ const ViewContact = ({ navigation, route }: any) => {
             stateKey="spouseDetails"
             heading="Spouse Details"
           />
-          {open.spouseDetails && (
-            <View style={styles.section}>
-              <View
-                style={{
-                  backgroundColor: '#42534e',
-                  padding: 15,
-                  borderRadius: 10,
-                }}
-              >
-                <Text style={styles.title}>Spouse Name</Text>
-                <Text style={styles.values}>
-                  {contactDetail?.spouse_name || '-'}
-                </Text>
-                <Text style={styles.title}>Spouse Birthday</Text>
-                <Text style={styles.values}>
-                  {contactDetail?.spouse_birthday
-                    ? dayjs(contactDetail?.spouse_birthday).format('MM-DD-YYYY')
-                    : '-'}
-                </Text>
-                <Text style={styles.title}>Spouse Details</Text>
-                <Text style={styles.values}>
-                  {contactDetail?.spouse_details || '-'}
-                </Text>
+          {open.spouseDetails &&
+            (!contactDetail?.spouse_name &&
+            !contactDetail?.spouse_birthday &&
+            !contactDetail?.spouse_details ? (
+              <View style={styles.dynamicItemContainer}>
+                <Text style={styles.noContent}>No Spouse details added.</Text>
               </View>
-            </View>
-          )}
+            ) : (
+              <View style={styles.section}>
+                <View
+                  style={{
+                    backgroundColor: '#42534e',
+                    padding: 15,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text style={styles.title}>Spouse Name</Text>
+                  <Text style={styles.values}>
+                    {contactDetail?.spouse_name || '-'}
+                  </Text>
+
+                  <Text style={styles.title}>Spouse Birthday</Text>
+                  <Text style={styles.values}>
+                    {contactDetail?.spouse_birthday
+                      ? dayjs(contactDetail?.spouse_birthday).format(
+                          'MM-DD-YYYY',
+                        )
+                      : '-'}
+                  </Text>
+
+                  <Text style={styles.title}>Spouse Details</Text>
+                  <Text style={styles.values}>
+                    {contactDetail?.spouse_details || '-'}
+                  </Text>
+                </View>
+              </View>
+            ))}
 
           {/* Family Details */}
           <ClosableHeader
@@ -314,7 +325,7 @@ const ViewContact = ({ navigation, route }: any) => {
             setState={setOpen}
             state={open}
             stateKey="employment"
-            heading="Employment"
+            heading="Employment Details"
           />
           {open.employment && (
             <View style={styles.section}>
@@ -347,7 +358,7 @@ const ViewContact = ({ navigation, route }: any) => {
             setState={setOpen}
             state={open}
             stateKey="education"
-            heading="Education"
+            heading="Education Details"
           />
           {open.education && (
             <View style={styles.section}>

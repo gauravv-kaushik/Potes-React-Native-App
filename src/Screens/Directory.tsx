@@ -15,7 +15,6 @@ import { allContactsDirectory } from '../../apiStore/services';
 import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
 import Loader from '../../components/Loader';
-import { useFocusEffect } from '@react-navigation/native';
 import dayjs from 'dayjs';
 
 const Directory = ({ navigation }: any) => {
@@ -36,12 +35,10 @@ const Directory = ({ navigation }: any) => {
         const groupedContacts = sortedContacts.reduce((acc, contact) => {
           const firstLetter = contact.full_name[0].toUpperCase();
           const key = /^[A-Z]$/.test(firstLetter) ? firstLetter : '#';
-          if (!acc[key]) {
-            acc[key] = [];
-          }
+          if (!acc[key]) acc[key] = [];
           acc[key].push(contact);
           return acc;
-        }, {});
+        }, {} as any);
 
         const sections = Object.keys(groupedContacts)
           .sort((a: any, b: any) => {
@@ -64,15 +61,11 @@ const Directory = ({ navigation }: any) => {
       })
       .finally(() => setLoading(false));
   };
+
   useEffect(() => {
     getDirectory();
   }, []);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getDirectory();
-  //   }, []),
-  // );
   const scrollToSection = (index: number) => {
     if (index !== -1 && sectionListRef.current) {
       sectionListRef.current.scrollToLocation({
@@ -107,6 +100,28 @@ const Directory = ({ navigation }: any) => {
     return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1.$2.$3');
   };
 
+  /** 🔥 Memoized item renderer */
+  const renderItem = useCallback(
+    ({ item }: any) => (
+      <ContactItem
+        item={item}
+        navigation={navigation}
+        formatPhone={formatPhone}
+      />
+    ),
+    [navigation],
+  );
+
+  /** 🔥 Memoized section header */
+  const renderSectionHeader = useCallback(
+    ({ section: { title } }: any) => (
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionHeaderText}>{title}</Text>
+      </View>
+    ),
+    [],
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#36413e' }}>
       <StatusBar backgroundColor="#36413e" barStyle="light-content" />
@@ -128,85 +143,22 @@ const Directory = ({ navigation }: any) => {
               <Text style={styles.pressableText}>+ Create Note</Text>
             </TouchableOpacity>
           </View>
+
           <View style={styles.listContainer}>
             <SectionList
               ref={sectionListRef}
               sections={allContacts}
-              keyExtractor={(item, index) => item.id.toString()}
-              renderItem={({ item }: any) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('ViewContact', { contact_id: item?.id })
-                  }
-                >
-                  <View style={styles.contactContainer}>
-                    <View style={styles.photoContainer}>
-                      {!item?.photo ? (
-                        <Feather name="user" color="#fff" size={24} />
-                      ) : (
-                        <Image
-                          source={{
-                            uri: item?.photo,
-                          }}
-                          style={{
-                            height: '100%',
-                            width: '100%',
-                            borderRadius: 20,
-                          }}
-                        />
-                      )}
-                    </View>
-                    <View style={styles.contactInfo}>
-                      <Text
-                        style={{
-                          ...styles.text,
-                          fontWeight: '600',
-                          color: '#fff',
-                          fontSize: 15,
-                          marginBottom: 5,
-                          flexShrink: 1,
-                        }}
-                        numberOfLines={3}
-                      >
-                        {item?.full_name}
-                      </Text>
-                      {item?.email && (
-                        <View style={styles.contactIconInfo}>
-                          <Feather name="mail" size={14} color="#e0e0e0" />
-                          <Text style={styles.text}>{item?.email}</Text>
-                        </View>
-                      )}
-                      {item?.phone && (
-                        <View style={styles.contactIconInfo}>
-                          <Feather name="phone" size={14} color="#e0e0e0" />
-                          <Text style={styles.text}>
-                            {formatPhone(item?.phone)}
-                          </Text>
-                        </View>
-                      )}
-                      {item?.birthday && (
-                        <View style={styles.contactIconInfo}>
-                          <Feather name="gift" size={14} color="#e0e0e0" />
-                          <Text style={styles.text}>
-                            {dayjs(item?.birthday).format('MM-DD-YYYY')}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              )}
-              renderSectionHeader={({ section: { title } }) => (
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionHeaderText}>{title}</Text>
-                </View>
-              )}
+              keyExtractor={(item, index) => item.id.toString() + index}
+              renderItem={renderItem}
+              renderSectionHeader={renderSectionHeader}
               style={styles.list}
               onScrollToIndexFailed={handleScrollToLocationFailed}
               showsVerticalScrollIndicator={false}
-              initialNumToRender={60}
-              maxToRenderPerBatch={60}
-              windowSize={30}
+              /** 🔥 Virtualization optimized */
+              initialNumToRender={15}
+              maxToRenderPerBatch={20}
+              windowSize={10}
+              removeClippedSubviews={true}
               getItemLayout={(data, index) => ({
                 length: 70,
                 offset: 70 * index,
@@ -226,7 +178,6 @@ const Directory = ({ navigation }: any) => {
                   const sectionIndex = allContacts.findIndex(
                     (section: any) => section.title === letter,
                   );
-
                   return (
                     <TouchableOpacity
                       key={letter}
@@ -248,11 +199,58 @@ const Directory = ({ navigation }: any) => {
 
 export default Directory;
 
+/** 🔥 Contact row optimized + memoized */
+const ContactItem = React.memo(
+  ({ item, navigation, formatPhone }: any) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('ViewContact', { contact_id: item?.id })
+      }
+    >
+      <View style={styles.contactContainer}>
+        <View style={styles.photoContainer}>
+          {!item?.photo ? (
+            <Feather name="user" color="#fff" size={24} />
+          ) : (
+            <Image source={{ uri: item?.photo }} style={styles.contactImage} />
+          )}
+        </View>
+        <View style={styles.contactInfo}>
+          <Text style={styles.contactName} numberOfLines={1}>
+            {item?.full_name}
+          </Text>
+          {item?.email && (
+            <View style={styles.contactIconInfo}>
+              <Feather name="mail" size={14} color="#e0e0e0" />
+              <Text style={styles.text}>{item?.email}</Text>
+            </View>
+          )}
+          {item?.phone && (
+            <View style={styles.contactIconInfo}>
+              <Feather name="phone" size={14} color="#e0e0e0" />
+              <Text style={styles.text}>{formatPhone(item?.phone)}</Text>
+            </View>
+          )}
+          {item?.birthday && (
+            <View style={styles.contactIconInfo}>
+              <Feather name="gift" size={14} color="#e0e0e0" />
+              <Text style={styles.text}>
+                {dayjs(item?.birthday).format('MM-DD-YYYY')}
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  ),
+  (prev, next) => prev.item.id === next.item.id, // shallow compare
+);
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#36413e',
     alignItems: 'center',
-    paddingTop: 10,
+    paddingTop: 60,
     flex: 1,
   },
   innerdiv: {
@@ -284,8 +282,6 @@ const styles = StyleSheet.create({
   pressableText: {
     color: '#fff',
     fontSize: 16,
-    flexShrink: 0,
-    flexWrap: 'nowrap',
   },
   listContainer: {
     flex: 1,
@@ -342,6 +338,7 @@ const styles = StyleSheet.create({
   },
   contactInfo: {
     marginLeft: 15,
+    flex: 1,
   },
   photoContainer: {
     backgroundColor: '#777',
@@ -351,10 +348,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  contactImage: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+  },
   contactIconInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+  },
+  contactName: {
+    fontWeight: '600',
+    color: '#fff',
+    fontSize: 15,
+    marginBottom: 5,
   },
   text: {
     color: '#e0e0e0',
