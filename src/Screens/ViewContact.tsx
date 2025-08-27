@@ -503,7 +503,7 @@ const ViewContact = ({ navigation, route }: any) => {
                   marginBottom: 20,
                 }}
               >
-                <Text style={{ color: '#999', fontSize: 14 }}>
+                <Text style={{ color: '#ccccccc', fontSize: 14 }}>
                   No notes for this contact
                 </Text>
               </View>
@@ -699,7 +699,7 @@ const styles = StyleSheet.create({
   },
   noContent: {
     fontSize: 14,
-    color: '#999',
+    color: '#cccccc',
     alignSelf: 'center',
     fontStyle: 'italic',
     marginVertical: 10,

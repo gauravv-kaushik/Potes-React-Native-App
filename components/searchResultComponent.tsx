@@ -66,7 +66,9 @@ const SearchResultComponent = ({ id, photo, name, content, query }: any) => {
           )}
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={styles.smallText}>{name}</Text>
+          <Text style={styles.smallText} numberOfLines={1}>
+            {name}
+          </Text>
           {getHighlightedText(content, query)}
         </View>
       </View>
@@ -83,8 +85,9 @@ const styles = StyleSheet.create({
     paddingRight: 40,
     flex: 1,
     gap: 10,
-    marginBottom: 10,
+    marginBottom: 20,
     borderBottomColor: '#999',
+    // borderBottomWidth: 1,
   },
   photoContainer: {
     backgroundColor: '#777',
@@ -107,8 +110,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   smallText: {
-    color: '#999',
-    fontSize: 12,
+    color: '#cccccc',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 5,
   },
   highlight: {
     backgroundColor: 'yellow',

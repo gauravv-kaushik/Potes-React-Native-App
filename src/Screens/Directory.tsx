@@ -16,6 +16,7 @@ import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
 import Loader from '../../components/Loader';
 import dayjs from 'dayjs';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Directory = ({ navigation }: any) => {
   const [allContacts, setAllContacts]: any = useState([]);
@@ -23,7 +24,7 @@ const Directory = ({ navigation }: any) => {
   const sectionListRef = useRef<SectionList>(null);
 
   const getDirectory = () => {
-    setLoading(true);
+    // setLoading(true);
     allContactsDirectory({
       query: {},
     })
@@ -63,8 +64,15 @@ const Directory = ({ navigation }: any) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     getDirectory();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDirectory();
+    }, []),
+  );
 
   const scrollToSection = (index: number) => {
     if (index !== -1 && sectionListRef.current) {
@@ -204,7 +212,9 @@ const ContactItem = React.memo(
   ({ item, navigation, formatPhone }: any) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('ViewContact', { contact_id: item?.id })
+        navigation.navigate('ViewContact', {
+          contact_id: item?.id,
+        })
       }
     >
       <View style={styles.contactContainer}>

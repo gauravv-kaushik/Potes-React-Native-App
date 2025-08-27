@@ -90,6 +90,7 @@ const Birthdays = ({ heading, data }: any) => {
                             fontSize: 16,
                             marginBottom: 5,
                             color: '#fff',
+                            fontWeight: '600',
                           }}
                         >
                           {item?.full_name}
@@ -158,6 +159,7 @@ const Birthdays = ({ heading, data }: any) => {
                             fontSize: 16,
                             marginBottom: 5,
                             color: '#fff',
+                            fontWeight: '600',
                           }}
                         >
                           {item?.full_name}
@@ -226,6 +228,7 @@ const Birthdays = ({ heading, data }: any) => {
                             style={{
                               fontSize: 16,
                               marginBottom: 5,
+                              fontWeight: '600',
                               color: '#fff',
                             }}
                           >
@@ -235,7 +238,7 @@ const Birthdays = ({ heading, data }: any) => {
                             style={{
                               fontSize: 16,
                               marginBottom: 5,
-                              color: '#fff',
+                              color: '#cccccc',
                             }}
                           >
                             {`(${item?.full_name}'s Spouse)`}
@@ -306,6 +309,7 @@ const Birthdays = ({ heading, data }: any) => {
                           <Text
                             style={{
                               fontSize: 16,
+                              fontWeight: '600',
                               marginBottom: 5,
                               color: '#fff',
                             }}
@@ -316,7 +320,7 @@ const Birthdays = ({ heading, data }: any) => {
                             style={{
                               fontSize: 16,
                               marginBottom: 5,
-                              color: '#fff',
+                              color: '#cccccc',
                             }}
                           >
                             {`(${item?.contact__full_name}'s Family Member)`}
@@ -389,14 +393,14 @@ const styles = StyleSheet.create({
     width: '60%',
   },
   dates: {
-    color: '#999',
+    color: '#cccccc',
     fontWeight: '400',
     fontSize: 15,
   },
   noBirthdayText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#999',
+    color: '#cccccc',
     alignSelf: 'center',
     marginVertical: 20,
   },

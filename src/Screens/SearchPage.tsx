@@ -145,7 +145,7 @@ const SearchPage = ({ navigation }: any) => {
           >
             {/* contacts */}
             {searchResult?.contacts?.length > 0 && (
-              <View style={styles.resultContainer}>
+              <View style={{ ...styles.resultContainer, paddingRight: 60 }}>
                 <Text style={styles.subHeading}>Contacts</Text>
                 {searchResult?.contacts?.map((item: any, index: any) => (
                   <TouchableOpacity
@@ -182,22 +182,6 @@ const SearchPage = ({ navigation }: any) => {
               </View>
             )}
 
-            {/* Notes */}
-            {searchResult?.notes?.length > 0 && (
-              <View style={styles.resultContainer}>
-                <Text style={styles.subHeading}>Notes</Text>
-                {searchResult?.notes?.map((item: any, index: any) => (
-                  <SearchResultComponent
-                    key={index}
-                    id={item?.contact?.id}
-                    photo={item?.contact?.photo}
-                    name={item?.contact?.full_name}
-                    content={item?.note}
-                    query={query}
-                  />
-                ))}
-              </View>
-            )}
             {/* spouse */}
             {searchResult?.spouse?.length > 0 && (
               <View style={styles.resultContainer}>
@@ -273,6 +257,22 @@ const SearchPage = ({ navigation }: any) => {
                     photo={item?.photo}
                     name={item?.full_name}
                     content={item?.interest}
+                    query={query}
+                  />
+                ))}
+              </View>
+            )}
+            {/* Notes */}
+            {searchResult?.notes?.length > 0 && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.subHeading}>Notes</Text>
+                {searchResult?.notes?.map((item: any, index: any) => (
+                  <SearchResultComponent
+                    key={index}
+                    id={item?.contact?.id}
+                    photo={item?.contact?.photo}
+                    name={item?.contact?.full_name}
+                    content={item?.note}
                     query={query}
                   />
                 ))}
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   smallText: {
-    color: '#999',
+    color: '#cccccc',
     fontSize: 12,
   },
   noResultContainer: {
